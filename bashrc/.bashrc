@@ -112,3 +112,4 @@ if ! shopt -oq posix; then
   fi
 fi
 export SHELL=/usr/bin/zsh
+. "$HOME/.cargo/env"
