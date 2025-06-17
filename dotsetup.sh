@@ -59,7 +59,7 @@ generate-configlink(){
       if [ "$folder_name" '=' "tmux" ]; then
         cp "$(pwd)/$file2" "$HOME/.config/$file2" 
       else
-       ln -sf "$(pwd)/$file" "$HOME/.config/$file2"
+       ln -sf "$(pwd)/$file2" "$HOME/.config/$file2"
       fi
     done
   fi
