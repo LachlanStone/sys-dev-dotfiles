@@ -2,10 +2,11 @@
 # Global Variables for the script
 folders=()
 home_array=()
+file2=""
 # Folders that are excluded from being processed into the .config directory under your home directory
-exclude=("home")
+exclude=("zsh")
 # Folders that are processed into the .config directory under your home directory and also symlinked to your home directory
-both=("bashrc")
+both=("bashrc" "tmux")
 
 #Funtions
 debug() {
@@ -50,9 +51,16 @@ generate-configlink(){
       # Remove trailing slash from folder name
       folder_name="${folder%/}"
       # Create symbolic link in the home directory
+      while IFS= read -r file; do
+        file2="${file}"
+      done < <(find "$folder" -maxdepth 1 -type f -name "*" -not -name ".DS_Store" -not -name ".stowrc")
       rm -rf "$HOME/.config/${folder_name:?}"
-      ln -sf "$(pwd)/$folder" "$HOME/.config/$folder_name"
-      debug "Created symlink for $folder_name in $HOME/.config/"
+      mkdir -p "$HOME/.config/$folder_name"
+      if [ "$folder_name" '=' "tmux" ]; then
+        cp "$(pwd)/$file2" "$HOME/.config/$file2" 
+      else
+       ln -sf "$(pwd)/$file" "$HOME/.config/$file2"
+      fi
     done
   fi
 }
@@ -64,7 +72,7 @@ for dir in "${exclude[@]}" "${both[@]}"; do
     home_filepath="${file}"
     home_filename="${file##*/}"
     home_array+=("$home_filepath")
-    debug "Processing file: $home_filename"
+    debug "Cake   Processing file: $home_filename"
     debug "File path: $PWD/$home_filepath"
     debug "Adding file to home_array: $home_filename"
   done < <(find "$dir" -maxdepth 1 -type f -name ".*" -not -name ".DS_Store" -not -name ".stowrc")
@@ -82,10 +90,15 @@ generate-homelink(){
       home_filepath="${file}"
       home_filename="${file##*/}"
       debug "Processing file for symlink: $home_filename"
-      debug "Created symlink for $PWD/$home_filepath in $HOME/$home_filename"
       # Create symbolic link in the home directory
-      rm -rf "$HOME/${home_filename:?}"
+      sudo rm "$HOME"/"${home_filename:?}"
+      if [[ "$home_filename" == *".tmux"* ]]; then
+        cp "$(pwd)/$home_filepath" "$HOME/$home_filename"
+        debug "CP from $PWD/$home_filepath in $HOME/$home_filename"
+      else
       ln -sf "$PWD/$home_filepath" "$HOME/$home_filename"
+        debug "Created symlink for $PWD/$home_filepath in $HOME/$home_filename"
+      fi
     done
   fi
 }
