@@ -31,4 +31,4 @@ A collection of my configuration files (dotfiles) and setup scripts for quickly 
 ---
 
 **Author:** lachlanstone  
-**License:** MIT (or specify your license)
+**License:** MIT
