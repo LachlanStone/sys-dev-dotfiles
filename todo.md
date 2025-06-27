@@ -14,6 +14,3 @@
     - Have this script linked to this repo as looking to setup neovim now as linking doing the editing within vim as this is quite quick
 - Setup TMUX
     - Force the numbers to fix so that this does not happen
-    - Update TMUX with custom script, want todo the following
-        1. Impliment custom colors based on hostnames and a default color
-        2. Impiment Forced TMUX Source updates
