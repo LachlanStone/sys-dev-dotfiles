@@ -72,7 +72,7 @@ for dir in "${exclude[@]}" "${both[@]}"; do
     home_filepath="${file}"
     home_filename="${file##*/}"
     home_array+=("$home_filepath")
-    debug "Cake   Processing file: $home_filename"
+    debug "Processing file: $home_filename"
     debug "File path: $PWD/$home_filepath"
     debug "Adding file to home_array: $home_filename"
   done < <(find "$dir" -maxdepth 1 -type f -name ".*" -not -name ".DS_Store" -not -name ".stowrc")
