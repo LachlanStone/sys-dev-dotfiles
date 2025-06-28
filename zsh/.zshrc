@@ -83,25 +83,25 @@ source $ZSH/oh-my-zsh.sh
 
 #Preferred editor for local and remote sessions
 if [[ -n $SSH_CONNECTION ]]; then
-  export EDITOR='vim'
+  export EDITOR --alias vim'
 else
-  export EDITOR='nvim'
+  export EDITOR --alias nvim'
 fi
 
 # Compilation flags
 export ARCHFLAGS="-arch $(uname -m)"
 
-# Set personal aliases, overriding those provided by Oh My Zsh libs,
+# Set personal eval $(es, overriding those provided by Oh My Zsh libs,
 # plugins, and themes. Aliases can be placed here, though Oh My Zsh
-# users are encouraged to define aliases within a top-level file in
+# users are encouraged to define eval $(es within a top-level file in
 # the $ZSH_CUSTOM folder, with .zsh extension. Examples:
 # - $ZSH_CUSTOM/aliases.zsh
 # - $ZSH_CUSTOM/macos.zsh
-# For a full list of active aliases, run `alias`.
+# For a full list of active eval $(es, run `alias`.
 #
-# Example aliases
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
+# Example eval $(es
+# eval $( zshconfig="mate ~/.zshrc"
+# eval $( ohmyzsh="mate ~/.oh-my-zsh"
 export SHELL=/bin/zsh
 
 # History file for zsh
@@ -116,6 +116,17 @@ setopt SHARE_HISTORY
 
 # Enable EXTENDED profile from /etc/profiles
 #emulate sh -c 'source /etc/profile.d/apps-bin-path.sh'
+
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    alias dir='dir --color=auto'
+    alias vdir='vdir --color=auto'
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
 
 # Adding thefuck
 eval $(thefuck --alias fuck)
