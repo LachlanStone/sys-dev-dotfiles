@@ -2,12 +2,12 @@
 # Global Variables for the script
 folders=()
 home_array=()
+script=()
 file2=""
 # Folders that are excluded from being processed into the .config directory under your home directory
 exclude=("zsh")
 # Folders that are processed into the .config directory under your home directory and also symlinked to your home directory
 both=("bashrc" "tmux")
-
 #Funtions
 debug() {
   if [ "$DEBUG" = true ]; then
@@ -30,12 +30,15 @@ generatedir(){
   for dir in */; do
     if [[ " ${both[*]} " =~ ${dir%/} ]]; then
       empty_folder "$dir" 
+      script+=("$dir")
       continue
     elif [[ " ${exclude[*]} " =~ ${dir%/} ]]; then
-        continue
+      script+=("$dir")
+      continue
     else
-        empty_folder "$dir"
-        continue
+      empty_folder "$dir"
+      script+=("$dir")
+      continue
     fi
   done
 }
@@ -105,8 +108,44 @@ generate-homelink(){
   fi
 }
 
-# Script Execution
+generate-scriptfiles(){
+# Create an array of files within the folders defined in the exclude array
+for dir in "${script[@]}"; do
+  while IFS= read -r file; do
+    script_filepath="${file}"
+    script_filename="${file##*/}"
+    script_array+=("$script_filepath")
+    debug "Processing file: $script_filename"
+    # debug "File path: $PWD/$script_filepath"
+    # debug "Adding file to home_array: $script_filename"
+  done < <(find "$dir" -maxdepth 1 -type f -name "*.sh" -not -name ".DS_Store" -not -name ".stowrc")
+done
+}
+
+run-scripting(){
+# Create symbolic links for each directory in the excule array
+  if [ "$DRY" = true ] || [ "$DRY" = TRUE ]; then
+    echo "Dry run mode: scripts will not be executed."
+    echo "Dry run mode: scripts that would be run: ${script_array[*]}"
+    return
+  else 
+    for script in "${script_array[@]}"; do
+      # Remove the leading path and get the filename
+      script_filepath="${script}"
+      script_filename="${script##*/}"
+      # Run the Shell Scripts for the setup of the hosts
+      debug "Running script from $PWD/$script_filepath"
+      sudo sh "$PWD/$script_filepath"
+    done
+  fi
+}
+
+# Global Folder Generator
 generatedir
+# Linking and Copy of Files
 generate-home
 generate-configlink
 generate-homelink
+# Run Scripts setup within the enviroment
+generate-scriptfiles
+run-scripting
