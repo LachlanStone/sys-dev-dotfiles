@@ -75,44 +75,30 @@ plugins=(git zsh-syntax-highlighting zsh-autosuggestions z zsh-bat)
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
-
 # export MANPATH="/usr/local/man:$MANPATH"
 
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
 
-#Preferred editor for local and remote sessions
-if [[ -n $SSH_CONNECTION ]]; then
-  export EDITOR --alias vim'
-else
-  export EDITOR --alias nvim'
+# Compilation flags
+export ARCHFLAGS="-arch $(uname -m)"
+
+# History file for zsh
+HISTFILE=~/.config/zsh_history
+# How many commands to store in history
+HISTSIZE=10000
+SAVEHIST=10000
+# Share history in every terminal session
+setopt SHARE_HISTORY
+
+# Terminal Update
+if [[ "$TERM_PROGRAM" == "ghostty" ]]; then
+    export TERM=xterm-256color
 fi
 
 # Compilation flags
 export ARCHFLAGS="-arch $(uname -m)"
-
-# Set personal eval $(es, overriding those provided by Oh My Zsh libs,
-# plugins, and themes. Aliases can be placed here, though Oh My Zsh
-# users are encouraged to define eval $(es within a top-level file in
-# the $ZSH_CUSTOM folder, with .zsh extension. Examples:
-# - $ZSH_CUSTOM/aliases.zsh
-# - $ZSH_CUSTOM/macos.zsh
-# For a full list of active eval $(es, run `alias`.
-#
-# Example eval $(es
-# eval $( zshconfig="mate ~/.zshrc"
-# eval $( ohmyzsh="mate ~/.oh-my-zsh"
-export SHELL=/bin/zsh
-
-# History file for zsh
-HISTFILE=~/.zsh_history
-
-# How many commands to store in history
-HISTSIZE=10000
-SAVEHIST=10000
-
-# Share history in every terminal session
-setopt SHARE_HISTORY
+export SHELL=/bin/zsh 
 
 # Enable EXTENDED profile from /etc/profiles
 #emulate sh -c 'source /etc/profile.d/apps-bin-path.sh'
@@ -128,14 +114,10 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
-# Adding thefuck
+# Adding thefuck command fixer
 eval $(thefuck --alias fuck)
-
 # Adding the tfenv variables to the funtion
 export PATH="$HOME/.config/tfenv/bin:$PATH"
-
-
-
 
 #Setup Cargo Directory
 . "$HOME/.cargo/env"
