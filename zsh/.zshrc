@@ -131,5 +131,11 @@ fi
 # Adding thefuck
 eval $(thefuck --alias fuck)
 
+# Adding the tfenv variables to the funtion
+export PATH="$HOME/.config/tfenv/bin:$PATH"
+
+
+
+
 #Setup Cargo Directory
 . "$HOME/.cargo/env"
