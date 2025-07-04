@@ -59,7 +59,12 @@ generate-configlink(){
       if [ "$folder_name" '=' "tmux" ]; then
         cp "$(pwd)/$file2" "$HOME/.config/$file2" 
       elif [ "$folder_name" '=' "ghostty" ]; then
-	cp -r "$(pwd)/$folder_name" "$HOME/.config" 
+	      cp -r "$(pwd)/$folder_name" "$HOME/.config" 
+      elif [ "$folder_name" '=' "zsh" ]; then
+	      cp -r "$(pwd)/$folder_name" "$HOME/.config" 
+      elif [ "$folder_name" '=' "btop" ]; then
+	      cp -r "$(pwd)/$folder_name" "$HOME/.config" 
+      
       else
        ln -sf "$(pwd)/$file2" "$HOME/.config/$file2"
       fi
@@ -97,6 +102,12 @@ generate-homelink(){
       if [[ "$home_filename" == *".tmux"* ]]; then
         cp "$(pwd)/$home_filepath" "$HOME/$home_filename"
         debug "CP from $PWD/$home_filepath in $HOME/$home_filename"
+      elif [ "$folder_name" '=' "zsh" ]; then
+        cp "$(pwd)/$home_filepath" "$HOME/$home_filename"
+        debug "CP from $PWD/$home_filepath in $HOME/$home_filename"
+        if [ -n "$ZSH_VERSION" ]; then
+          exec zsh -l
+        fi
       else
       ln -sf "$PWD/$home_filepath" "$HOME/$home_filename"
         debug "Created symlink for $PWD/$home_filepath in $HOME/$home_filename"
