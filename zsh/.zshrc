@@ -70,7 +70,7 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-syntax-highlighting zsh-autosuggestions z zsh-bat)
+plugins=(git zsh-syntax-highlighting zsh-autosuggestions z)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -94,6 +94,8 @@ setopt SHARE_HISTORY
 # Terminal Update
 if [[ "$TERM_PROGRAM" == "ghostty" ]]; then
     export TERM=xterm-256color
+elif [[ "$TERM_PROGRAM" == "alacritty" ]]; then
+    export TERM=xterm-256color
 fi
 
 # Compilation flags
@@ -116,8 +118,11 @@ fi
 
 # Adding thefuck command fixer
 eval $(thefuck --alias fuck)
+alias zat='batcat --color always --decorations never'
 # Adding the tfenv variables to the funtion
 export PATH="$HOME/.config/tfenv/bin:$PATH"
+
+export XDG_CONFIG_HOME="$HOME/.config"
 
 #Setup Cargo Directory
 . "$HOME/.cargo/env"
