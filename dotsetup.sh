@@ -104,8 +104,10 @@ generate-homelink(){
       elif [[ "$home_filename" == *".zsh"* ]]; then
         cp "$PWD/$home_filepath" "$HOME/$home_filename"
         debug "CP from $PWD/$home_filepath in $HOME/$home_filename"
-        if [ -n "$ZSH_VERSION" ]; then
-          source ~/.zshrc
+        if [ "$SHELL" = "/bin/zsh" ]; then
+          if [ "$home_filename" == ".zshrc" ]; then
+            echo "Please restart your terminal or run 'source ~/.zshrc' in your zsh shell to apply changes."
+          fi
         fi
       else
         ln -sf "$PWD/$home_filepath" "$HOME/$home_filename"

@@ -118,10 +118,13 @@ fi
 
 # Adding thefuck command fixer
 eval $(thefuck --alias fuck)
-alias zat='batcat --color always --decorations never'
-# Adding the tfenv variables to the funtion
-export PATH="$HOME/.config/tfenv/bin:$PATH"
 
+# Changing the batcat configuration, to remove the plugin and move to shell component
+# NOTE: This also detect if no file is provided
+alias bat='f() { if [ -z "$1" ]; then echo "no text/file was provided not running batcat"; else batcat --color always --decorations never "$1"; fi; }; f'
+
+# Export Variables that are used within the enviroment
+export PATH="$HOME/.config/tfenv/bin:$PATH"
 export XDG_CONFIG_HOME="$HOME/.config"
 
 #Setup Cargo Directory
