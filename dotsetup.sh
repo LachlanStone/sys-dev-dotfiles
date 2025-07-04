@@ -64,7 +64,6 @@ generate-configlink(){
 	      cp -r "$(pwd)/$folder_name" "$HOME/.config" 
       elif [ "$folder_name" '=' "btop" ]; then
 	      cp -r "$(pwd)/$folder_name" "$HOME/.config" 
-      
       else
        ln -sf "$(pwd)/$file2" "$HOME/.config/$file2"
       fi
@@ -106,7 +105,7 @@ generate-homelink(){
         cp "$(pwd)/$home_filepath" "$HOME/$home_filename"
         debug "CP from $PWD/$home_filepath in $HOME/$home_filename"
         if [ -n "$ZSH_VERSION" ]; then
-          exec zsh -l
+          source ~/.zshrc
         fi
       else
       ln -sf "$PWD/$home_filepath" "$HOME/$home_filename"
