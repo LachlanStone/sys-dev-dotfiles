@@ -56,7 +56,7 @@ generate-configlink(){
       # Create symbolic link in the home directory
       while IFS= read -r file; do
         file2="${file}"
-      done < <(find "$folder" -maxdepth 1 -type f -name "*" -not -name ".DS_Store" -not -name ".stowrc")
+      done < <(find "$folder" -maxdepth 1 -type f -name "*" -not -name ".DS_Store" -not -name ".stowrc" -not name "*.sh")
       rm -rf "$HOME/.config/${folder_name:?}"
       mkdir -p "$HOME/.config/$folder_name"
       if [ "$folder_name" '=' "tmux" ]; then

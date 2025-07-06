@@ -13,7 +13,6 @@ setopt HIST_IGNORE_ALL_DUPS      # Remove older duplicate entries from history
 setopt HIST_REDUCE_BLANKS        # Remove superfluous blanks before recording entry
 setopt HIST_VERIFY               # Show command with history expansion before running
 
-
 ### System Fixes / Component Setup
 # Setup the Editor for my systems
 if command -v nvim >/dev/null 2>&1; then
