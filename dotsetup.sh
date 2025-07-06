@@ -5,9 +5,9 @@ home_array=()
 script=()
 file2=""
 # Folders that are excluded from being processed into the .config directory under your home directory
-exclude=("zsh")
+exclude=()
 # Folders that are processed into the .config directory under your home directory and also symlinked to your home directory
-both=("bashrc" "tmux")
+both=("zsh" "bashrc" "tmux")
 #Funtions
 debug() {
   if [ "$DEBUG" = true ]; then
@@ -64,7 +64,9 @@ generate-configlink(){
       elif [ "$folder_name" '=' "ghostty" ]; then
         cp -r "$PWD/$folder_name" "$HOME/.config" 
       elif [ "$folder_name" '=' "zsh" ]; then
-        cp -r "$PWD/$folder_name" "$HOME/.config" 
+        cp -r "$PWD/$folder_name" "$HOME/.config"
+        rm -f $HOME/.config/zsh/.zshrc
+        rm -f $HOME/.config/zsh/.zshenv
       elif [ "$folder_name" '=' "btop" ]; then
         cp -r "$PWD/$folder_name" "$HOME/.config" 
       else
