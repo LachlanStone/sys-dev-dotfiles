@@ -1,6 +1,3 @@
-# Urgent
-- Working on script to remove the requirement of stow due to issues with it | DONE
-- Add some support for colour within the script to make debuging easier
 # Version 2
 - I want to impliment the ability to create my own .file for folder structure like stowrc
 - Redo the code to detect all the folders, then go in

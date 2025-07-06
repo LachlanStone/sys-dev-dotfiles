@@ -60,11 +60,15 @@ generate-configlink(){
       rm -rf "$HOME/.config/${folder_name:?}"
       mkdir -p "$HOME/.config/$folder_name"
       if [ "$folder_name" '=' "tmux" ]; then
-        cp "$(pwd)/$file2" "$HOME/.config/$file2" 
+        cp "$PWD/$file2" "$HOME/.config/$file2" 
       elif [ "$folder_name" '=' "ghostty" ]; then
-	cp -r "$(pwd)/$folder_name" "$HOME/.config" 
+        cp -r "$PWD/$folder_name" "$HOME/.config" 
+      elif [ "$folder_name" '=' "zsh" ]; then
+        cp -r "$PWD/$folder_name" "$HOME/.config" 
+      elif [ "$folder_name" '=' "btop" ]; then
+        cp -r "$PWD/$folder_name" "$HOME/.config" 
       else
-       ln -sf "$(pwd)/$file2" "$HOME/.config/$file2"
+       ln -sf "$PWD/$file2" "$HOME/.config/$file2"
       fi
     done
   fi
@@ -98,10 +102,18 @@ generate-homelink(){
       # Create symbolic link in the home directory
       sudo rm "$HOME"/"${home_filename:?}"
       if [[ "$home_filename" == *".tmux"* ]]; then
-        cp "$(pwd)/$home_filepath" "$HOME/$home_filename"
+        cp "$PWD/$home_filepath" "$HOME/$home_filename"
         debug "CP from $PWD/$home_filepath in $HOME/$home_filename"
+      elif [[ "$home_filename" == *".zsh"* ]]; then
+        cp "$PWD/$home_filepath" "$HOME/$home_filename"
+        debug "CP from $PWD/$home_filepath in $HOME/$home_filename"
+        if [ "$SHELL" = "/bin/zsh" ]; then
+          if [ "$home_filename" == ".zshrc" ]; then
+            echo "Please restart your terminal or run 'source ~/.zshrc' in your zsh shell to apply changes."
+          fi
+        fi
       else
-      ln -sf "$PWD/$home_filepath" "$HOME/$home_filename"
+        ln -sf "$PWD/$home_filepath" "$HOME/$home_filename"
         debug "Created symlink for $PWD/$home_filepath in $HOME/$home_filename"
       fi
     done
