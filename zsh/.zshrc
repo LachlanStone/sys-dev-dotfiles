@@ -28,7 +28,6 @@ source $ZRCDir/alias.zsh
 source $ZRCDir/completion.zsh
 autoload -Uz compinit
 compinit
-sour
 
 # User configuration
 # export MANPATH="/usr/local/man:$MANPATH"
