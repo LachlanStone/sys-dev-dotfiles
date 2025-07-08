@@ -15,21 +15,21 @@ debug() {
   fi
 }
 
-empty_folder(){
-    # check if the directory is not empty
+empty_folder() {
+  # check if the directory is not empty
   if [ -z "$(ls -A "$dir")" ]; then
     debug "Skipping empty directory: $dir"
-  else 
+  else
     debug "Processing directory: $dir"
     folders+=("$dir")
   fi
 }
 
-generatedir(){
-# Generate a list of directories in the current directory
+generatedir() {
+  # Generate a list of directories in the current directory
   for dir in */; do
     if [[ " ${both[*]} " =~ ${dir%/} ]]; then
-      empty_folder "$dir" 
+      empty_folder "$dir"
       script+=("$dir")
       continue
     elif [[ " ${exclude[*]} " =~ ${dir%/} ]]; then
@@ -43,10 +43,11 @@ generatedir(){
   done
 }
 
-generate-configlink(){
-# Create symbolic links for each directory in the folders array
+generate-configlink() {
+  # Create symbolic links for each directory in the folders array
   if [ "$DRY" = true ] || [ "$DRY" = TRUE ]; then
     echo "Dry run mode: No symlinks will be created."
+    # shellcheck disable=SC2145
     echo "Dry run mode: Folders to be linked: ${folders[@]}"
     return
   else
@@ -56,46 +57,47 @@ generate-configlink(){
       # Create symbolic link in the home directory
       while IFS= read -r file; do
         file2="${file}"
-      done < <(find "$folder" -maxdepth 1 -type f -name "*" -not -name ".DS_Store" -not -name ".stowrc" -not name "*.sh")
+      done < <(find "$folder" -maxdepth 1 -type f -name "*" -not -name ".DS_Store" -not -name ".stowrc" -not -name "*.sh")
       rm -rf "$HOME/.config/${folder_name:?}"
       mkdir -p "$HOME/.config/$folder_name"
       if [ "$folder_name" '=' "tmux" ]; then
-        cp "$PWD/$file2" "$HOME/.config/$file2" 
+        cp "$PWD/$file2" "$HOME/.config/$file2"
       elif [ "$folder_name" '=' "ghostty" ]; then
-        cp -r "$PWD/$folder_name" "$HOME/.config" 
+        cp -r "$PWD/$folder_name" "$HOME/.config"
       elif [ "$folder_name" '=' "zsh" ]; then
         cp -r "$PWD/$folder_name" "$HOME/.config"
-        rm -f $HOME/.config/zsh/.zshrc
-        rm -f $HOME/.config/zsh/.zshenv
+        rm -f "$HOME"/.config/zsh/.zshrc
+        rm -f "$HOME"/.config/zsh/.zshenv
       elif [ "$folder_name" '=' "btop" ]; then
-        cp -r "$PWD/$folder_name" "$HOME/.config" 
+        cp -r "$PWD/$folder_name" "$HOME/.config"
       else
-       ln -sf "$PWD/$file2" "$HOME/.config/$file2"
+        ln -sf "$PWD/$file2" "$HOME/.config/$file2"
       fi
     done
   fi
 }
 
-generate-home(){
-# Create an array of files within the folders defined in the exclude array
-for dir in "${exclude[@]}" "${both[@]}"; do
-  while IFS= read -r file; do
-    home_filepath="${file}"
-    home_filename="${file##*/}"
-    home_array+=("$home_filepath")
-    debug "Processing file: $home_filename"
-    debug "File path: $PWD/$home_filepath"
-    debug "Adding file to home_array: $home_filename"
-  done < <(find "$dir" -maxdepth 1 -type f -name ".*" -not -name ".DS_Store" -not -name ".stowrc")
-done
+generate-home() {
+  # Create an array of files within the folders defined in the exclude array
+  for dir in "${exclude[@]}" "${both[@]}"; do
+    while IFS= read -r file; do
+      home_filepath="${file}"
+      home_filename="${file##*/}"
+      home_array+=("$home_filepath")
+      debug "Processing file: $home_filename"
+      debug "File path: $PWD/$home_filepath"
+      debug "Adding file to home_array: $home_filename"
+    done < <(find "$dir" -maxdepth 1 -type f -name ".*" -not -name ".DS_Store" -not -name ".stowrc")
+  done
 }
-generate-homelink(){
-# Create symbolic links for each directory in the excule array
+
+generate-homelink() {
+  # Create symbolic links for each directory in the excule array
   if [ "$DRY" = true ] || [ "$DRY" = TRUE ]; then
     echo "Dry run mode: No symlinks will be created."
     echo "Dry run mode: files to be linked to HOME Directory: ${home_array[*]}"
     return
-  else 
+  else
     for file in "${home_array[@]}"; do
       # Remove the leading path and get the filename
       home_filepath="${file}"
@@ -122,27 +124,27 @@ generate-homelink(){
   fi
 }
 
-generate-scriptfiles(){
-# Create an array of files within the folders defined in the exclude array
-for dir in "${script[@]}"; do
-  while IFS= read -r file; do
-    script_filepath="${file}"
-    script_filename="${file##*/}"
-    script_array+=("$script_filepath")
-    debug "Processing file: $script_filename"
-    # debug "File path: $PWD/$script_filepath"
-    # debug "Adding file to home_array: $script_filename"
-  done < <(find "$dir" -maxdepth 1 -type f -name "*.sh" -not -name ".DS_Store" -not -name ".stowrc")
-done
+generate-scriptfiles() {
+  # Create an array of files within the folders defined in the exclude array
+  for dir in "${script[@]}"; do
+    while IFS= read -r file; do
+      script_filepath="${file}"
+      script_filename="${file##*/}"
+      script_array+=("$script_filepath")
+      debug "Processing file: $script_filename"
+      # debug "File path: $PWD/$script_filepath"
+      # debug "Adding file to home_array: $script_filename"
+    done < <(find "$dir" -maxdepth 1 -type f -name "*.sh" -not -name ".DS_Store" -not -name ".stowrc")
+  done
 }
 
-run-scripting(){
-# Create symbolic links for each directory in the excule array
+run-scripting() {
+  # Create symbolic links for each directory in the excule array
   if [ "$DRY" = true ] || [ "$DRY" = TRUE ]; then
     echo "Dry run mode: scripts will not be executed."
     echo "Dry run mode: scripts that would be run: ${script_array[*]}"
     return
-  else 
+  else
     for script in "${script_array[@]}"; do
       # Remove the leading path and get the filename
       script_filepath="${script}"
