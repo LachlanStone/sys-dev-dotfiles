@@ -1,6 +1,8 @@
 # If you come from bash you might have to change your $PATH.
 export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
-export PATH="$HOME/.config/tfenv/bin:$PATH"
+export PATH="$HOME/.tfenv/bin:$PATH"
+
+# System Exports
 export XDG_CONFIG_HOME="$HOME/.config"
 
 # Other ZSH Paths that I user
@@ -26,6 +28,9 @@ source $ZSH/oh-my-zsh.sh                                    # Start the Plugins
 source $ZRCDir/base.zsh
 source $ZRCDir/alias.zsh
 source $ZRCDir/completion.zsh
+
+## Completions of Packages for ZSH
+source "$ZLocalDir"/completions/.tenv.completion.zsh
 autoload -Uz compinit
 compinit
 

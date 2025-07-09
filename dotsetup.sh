@@ -151,7 +151,7 @@ run-scripting() {
       script_filename="${script##*/}"
       # Run the Shell Scripts for the setup of the hosts
       debug "Running script from $PWD/$script_filepath"
-      sudo sh "$PWD/$script_filepath"
+      sh "$PWD/$script_filepath"
     done
   fi
 }
