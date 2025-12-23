@@ -1,5 +1,5 @@
 # If you come from bash you might have to change your $PATH.
-export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
+export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:/snap/bin/:$PATH
 export PATH="$HOME/.tfenv/bin:$PATH"
 
 # System Exports
@@ -21,12 +21,12 @@ ENABLE_CORRECTION="true"
 COMPLETION_WAITING_DOTS="true"
 
 ### Plugins
-plugins=(git z zsh-syntax-highlighting zsh-autosuggestions) # Plugins that will be used
+plugins=(git z zsh-syntax-highlighting zsh-autosuggestions direnv talosctl) # Plugins that will be used
 source $ZSH/oh-my-zsh.sh                                    # Start the Plugins
-
+eval "$(direnv hook zsh)"
 ### My Customizations within the enviroment
 source $ZRCDir/base.zsh
-source $ZRCDir/alias.zsh
+source $ZRCDir/alia.zsh
 source $ZRCDir/completion.zsh
 
 ## Completions of Packages for ZSH
@@ -42,3 +42,4 @@ compinit
 
 #Setup Cargo Directory
 . "$HOME/.cargo/env"
+source <(kubectl completion zsh)

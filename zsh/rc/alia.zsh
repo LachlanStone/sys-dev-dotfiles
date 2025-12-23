@@ -11,6 +11,11 @@ fi
 
 # Adding thefuck command fixer
 eval $(thefuck --alias fuck)
+alias lg='lazygit'
+alias kubespace='sh ~/.config/scripts/kube/kubespace.sh'
+alias kn='bash ~/.config/scripts/kube/kubespace.sh'
+
+
 
 # Changing the batcat configuration, to remove the plugin and move to shell component
 # NOTE: This also detect if no file is provided

@@ -32,6 +32,10 @@ export GIT_EDITOR=$EDITOR
 export ARCHFLAGS="-arch $(uname -m)"
 export SHELL=/bin/zsh
 
+# BREW
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+
 # Terminal Update
 ## This is used due to no color when within ssh session due to terminal emulator
 if [[ "$TERM_PROGRAM" == "ghostty" ]]; then
