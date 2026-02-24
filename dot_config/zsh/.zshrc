@@ -1,0 +1,166 @@
+# If you come from bash you might have to change your $PATH.
+export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:/snap/bin/:$PATH
+export PATH="$HOME/.tfenv/bin:$PATH"
+export ZDOTDIR="$HOME"
+
+# Remove duplicate entries from PATH while preserving order
+path_remove_dups() {
+	local p
+	local -a list
+	local -A seen
+	IFS=:
+	for p in ${(@s/:/)PATH}; do
+		if [[ -n $p && -z ${seen[$p]} ]]; then
+			list+=($p)
+			seen[$p]=1
+		fi
+	done
+	PATH=${(j/:/)list}
+	unset IFS list seen p
+}
+path_remove_dups
+
+# System Exports
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+
+# Other ZSH Paths that I user
+export ZLocalDir="$HOME/.config/zsh"
+export ZRCDir="$HOME/.config/zsh/rc"
+export ZINIT_HOME="$XDG_DATA_HOME/zinit/zinit.git"
+
+### ZSH Settings ###
+setopt COMPLETE_IN_WORD
+setopt AUTO_CD
+setopt CORRECT
+setopt HIST_IGNORE_SPACE
+setopt HIST_SAVE_BY_COPY
+
+### Plugin Manager (zinit) ###
+if [ ! -d "$ZINIT_HOME" ]; then
+	mkdir -p "$(dirname "$ZINIT_HOME")"
+	git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+fi
+source "$ZINIT_HOME/zinit.zsh"
+
+### Plugins
+zinit snippet OMZP::git
+zinit ice wait lucid
+zinit light zdharma-continuum/fast-syntax-highlighting
+zinit light zsh-users/zsh-autosuggestions
+zinit light Aloxaf/fzf-tab
+zinit light zsh-users/zsh-history-substring-search
+zinit light zsh-users/zsh-completions
+zinit snippet OMZP::direnv
+zinit light ajeetdsouza/zoxide
+
+### My Customizations within the enviroment
+## rc manager: helpers to load/reload/list your `rc` components
+typeset -A RC_LOADED
+_rc_files=(base.zsh alia.zsh completion.zsh zoxide.zsh)
+
+rc_file_path() {
+	if [[ -f "$1" ]]; then
+		echo "$1"
+	else
+		echo "$ZRCDir/$1"
+	fi
+}
+
+rc_load() {
+	local name="$1"
+	if [[ -z "$name" ]]; then
+		echo "rc_load: missing name" >&2; return 2
+	fi
+	local path
+	path=$(rc_file_path "$name")
+	if [[ ! -f "$path" ]]; then
+		echo "rc: not found: $name" >&2; return 1
+	fi
+	source "$path"
+	RC_LOADED[$name]=1
+}
+
+rc_reload() {
+	local name="$1"
+	if [[ -z "$name" || "$name" == "all" ]]; then
+		for f in "${_rc_files[@]}"; do
+			rc_load "$f"
+		done
+		return 0
+	fi
+	rc_load "$name"
+}
+
+rc_list() {
+	for f in "${_rc_files[@]}"; do
+		if [[ -n ${RC_LOADED[$f]} ]]; then
+			printf "%-15s %s\n" "$f" "loaded"
+		else
+			printf "%-15s %s\n" "$f" "not loaded"
+		fi
+	done
+}
+
+# Optionally enable profiling (set ZSH_PROFILE=1 to enable)
+if [[ -n "$ZSH_PROFILE" ]]; then
+	zmodload zsh/zprof >/dev/null 2>&1 || true
+fi
+
+# Only perform interactive-only initialisation when shell is interactive
+if [[ $- == *i* ]]; then
+	# Load all rc components (keeps same behavior as before)
+	rc_reload all
+
+	## Completions of Packages for ZSH (safe source)		
+	if [[ -f "$ZLocalDir/completions/.tenv.completion.zsh" ]]; then
+		source "$ZLocalDir"/completions/.tenv.completion.zsh
+	fi
+
+	autoload -Uz compinit 2>/dev/null	
+	# Fix insecure completion dirs (if any) then init
+	if compaudit >/dev/null 2>&1; then
+		insecure_dirs=$(compaudit 2>/dev/null)
+		if [[ -n "$insecure_dirs" ]]; then
+			echo "fixing insecure completion directories..." >&2
+			echo "$insecure_dirs" | xargs -r chmod g-w
+		fi
+	fi
+	compinit
+
+	# Print profiling results if requested
+	if [[ -n "$ZSH_PROFILE" ]]; then
+		zprof
+	fi
+fi
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+### Prompt (Starship) ###
+if command -v starship >/dev/null 2>&1; then
+	eval "$(starship init zsh)"
+fi
+
+# Homebrew env (only if available)
+if command -v brew >/dev/null 2>&1; then
+	eval "$(brew shellenv)"
+fi
+# zoxide (only if available)
+if command -v zoxide >/dev/null 2>&1; then
+	eval "$(zoxide init zsh)"
+fi
+# User configuration
+# export MANPATH="/usr/local/man:$MANPATH"
+
+# You may need to manually set your language environment
+# export LANG=en_US.UTF-8
+
+# Setup Cargo Directory (if present)
+if [[ -f "$HOME/.cargo/env" ]]; then
+	. "$HOME/.cargo/env"
+fi
+if command -v talosctl >/dev/null 2>&1; then
+	source <(talosctl completion zsh)
+fi
+if command -v kubectl >/dev/null 2>&1; then
+	source <(kubectl completion zsh)
+fi

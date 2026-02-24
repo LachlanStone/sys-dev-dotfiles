@@ -1,0 +1,15 @@
+.gitignore
+LICENSE
+readme.md
+todo.md
+dotsetup.sh
+
+# Legacy pre-chezmoi layout (kept for reference) - Moved to the Archive File
+bashrc/**
+btop/**
+ghostty/**
+scripts/**
+tms/**
+tmux/**
+vim/**
+zsh/**

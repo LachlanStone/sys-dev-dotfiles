@@ -1,0 +1,71 @@
+# $XDG_CONFIG_HOME/k9s/config.yaml
+# Global skin is specified
+k9s:
+  liveViewAutoRefresh: true
+  refreshRate: 2
+  maxConnRetry: 5
+  readOnly: false
+  ui:
+    enableMouse: true
+    headless: false
+    logoless: false
+    crumbsless: false
+    noIcons: false
+    # Toggles reactive UI. This option provide for watching on disk artifacts changes and update the UI live  Defaults to false.
+    reactive: true
+    # Uses in_the_navy skin located in your $XDG_CONFIG_HOME/skins/in_the_navy.yaml
+    skin: catppuccin-mocha-transparent # => All clusters will use this skin unless otherwise specified in the context configuration file
+  # Toggles whether k9s should check for the latest revision from the Github repository releases. Default is false.
+  skipLatestRevCheck: false
+  # Disable count pods while in node view. Default is false.
+  disablePodCounting: false
+  # ShellPod configuration applies to all your clusters
+  shellPod:
+    # The shell pod image to use.
+    image: busybox:1.35.0
+    # The namespace to launch to shell pod into.
+    namespace: default
+    # The resource limit to set on the shell pod.
+    limits:
+      cpu: 100m
+      memory: 100Mi
+    # Enable TTY
+    tty: true
+  # ImageScan config changed from v0.29.0!
+  imageScans:
+    enable: true
+    # Exclusions excludes namespaces or specific workload labels
+    exclusions:
+      # Exclude the following namespaces for image vulscans!
+      namespaces:
+        - kube-system
+        - fred
+      # Exclude pods with the following labels from image vulscans!
+      labels:
+        k8s-app:
+          - kindnet
+          - bozo
+        env:
+          - dev
+  # Logs configuration
+  logger:
+    # Defines the number of lines to return. Default 100
+    tail: 100
+    # Defines the total number of log lines to allow in the view. Default 1000
+    buffer: 5000
+    # Represents how far to go back in the log timeline in seconds. Setting to -1 will tail logs. Default is -1.
+    sinceSeconds: 300
+    # Go full screen while displaying logs. Default false
+    fullScreen: false
+    # Toggles log line wrap. Default false
+    textWrap: false
+    # Toggles log line timestamp info. Default false
+    showTime: false
+  # Global memory/cpu thresholds. When set will alert when thresholds are met.
+  thresholds:
+    cpu:
+      critical: 90
+      warn: 70
+    memory:
+      critical: 90
+      warn: 70

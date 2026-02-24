@@ -58,7 +58,6 @@ zstyle ':completion:*' file-sort 'modification'
 
 
 zstyle ':completion:*' list-dirs-first false
-zstyle ':completion:*' verbose yes
 
 # make completion is slow
 zstyle ':completion:*:make:*:targets' call-command true

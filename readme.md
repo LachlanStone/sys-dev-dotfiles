@@ -1,34 +1,72 @@
-# sys-dev-dotfiles
+# sys-dev-dotfiles (Chezmoi)
 
-A collection of my configuration files (dotfiles) and setup scripts for quickly configuring a my linux environment.
+This repository now uses [chezmoi](https://www.chezmoi.io/) as the source-of-truth for dotfiles.
 
-## Structure
+## Chezmoi-managed layout
 
-- `dotsetup.sh` — Bash script to set up symlinks for config files.
-- `bashrc/` — Bash shell configuration files.
-- `zsh/` — Zsh shell configuration files.
-- `tmux/` — Tmux configuration files.
-- `btop/` — btop system monitor configuration.
-- `tms/` — tms session manager config.
-- `vim/` — Vim editor info/history.
+- `dot_bashrc` -> `~/.bashrc`
+- `dot_zshrc` -> `~/.zshrc`
+- `dot_zshenv` -> `~/.zshenv`
+- `dot_tmux.conf` -> `~/.tmux.conf`
+- `dot_config/**` -> `~/.config/**`
 
-## Usage
+Legacy folders (`bashrc/`, `zsh/`, `tmux/`, etc.) are kept for reference and ignored by chezmoi via `.chezmoiignore`.
 
-1. Clone this repository to your home directory.
-2. Run the setup script:
+## Install
+
+1. Install chezmoi:
+
+    ```sh
+    sh -c "$(curl -fsLS get.chezmoi.io)"
+    ```
+
+2. Initialize from this repo:
+
+    ```sh
+    chezmoi init --apply lachlanstone
+    ```
+
+    Or for a local clone:
+
+    ```sh
+    chezmoi init --apply --source "$HOME/sys-dev-dotfiles"
+    ```
+
+## Day-to-day usage
+
+- Apply latest state:
 
    ```sh
-   ./dotsetup.sh
+   chezmoi apply
    ```
 
-3. The script will create symlinks and copy configuration files to the appropriate locations in your home directory and `.config`.
+- Edit a managed file:
+
+   ```sh
+   chezmoi edit ~/.zshrc
+   ```
+
+- See pending changes:
+
+   ```sh
+   chezmoi diff
+   ```
+
+- Add new file to chezmoi source state:
+
+   ```sh
+   chezmoi add ~/.config/<app>/<file>
+   ```
 
 ## Notes
 
-- Some folders are excluded or handled specially (see `dotsetup.sh`).
-- Edit the configs as needed for your environment.
+- `dotsetup.sh` is no longer required for normal setup.
+- `dot_config/scripts/kube/executable_kubespace.sh` installs as `~/.config/scripts/kube/kubespace.sh` with executable permissions.
+- `run_once_10-tenv-completions.sh` generates `tenv` completions on first apply when `tenv` is installed.
+- Zsh now uses `zinit` (not Oh My Zsh). Update plugins with `zsh-update-plugins`.
+- Prompt uses `starship`, configured in `~/.config/starship.toml` to show directory, git branch, and Kubernetes namespace.
 
 ---
 
-**Author:** lachlanstone  
+**Author:** lachlanstone
 **License:** MIT
