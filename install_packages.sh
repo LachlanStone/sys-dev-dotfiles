@@ -37,7 +37,8 @@ sudo dnf install -y \
 	httpd-tools \
 	openssl \
 	openssh-clients \
-	nvim
+	nvim \
+	zoxide
 
 sudo dnf group install -y development-tools
 
@@ -56,27 +57,49 @@ elif command -v brew >/dev/null 2>&1; then
 fi
 
 echo "Installing brew packages required by your zsh/cli config"
-brew install kubernetes-cli lazygit thefuck chezmoi starship gh
+for pkg in kubernetes-cli lazygit thefuck chezmoi starship gh; do
+	if ! brew list --formula "$pkg" >/dev/null 2>&1; then
+		brew install "$pkg"
+	else
+		echo "$pkg already installed, skipping"
+	fi
+done
 mkdir -p "$HOME/.local/share/chezmoi"
 
-echo "Installing brew packages for your Kubernetes workflow"
-brew install talosctl k9s helm fluxcd/tap/flux dgunzy/tap/flux9s tealdeer
+if command -v brew >/dev/null 2>&1; then
+	echo "Installing brew packages for your Kubernetes workflow"
+	for pkg in talosctl k9s helm fluxcd/tap/flux dgunzy/tap/flux9s tealdeer; do
+		if ! brew list --formula "$pkg" >/dev/null 2>&1; then
+			brew install "$pkg"
+		else
+			echo "$pkg already installed, skipping"
+		fi
+	done
 
-echo "Installing tenv (optional but recommended for completion generation)"
-if brew tap tofuutils/tap >/dev/null 2>&1; then
-	brew install tofuutils/tap/tenv || true
-	echo "Installing latest OpenTofu and Terraform via tenv"
-	if command -v tenv >/dev/null 2>&1; then
-		tenv tofu install latest
-		tenv tf install latest
-	elif [ -x "$(brew --prefix)/bin/tenv" ]; then
-		"$(brew --prefix)/bin/tenv" tofu install latest
-		"$(brew --prefix)/bin/tenv" tf install latest
+	echo "Installing tenv (optional but recommended for completion generation)"
+	# skip if already present either in PATH or as a brewed formula
+	if command -v tenv >/dev/null 2>&1 || \
+		brew list --formula tofuutils/tap/tenv >/dev/null 2>&1; then
+		echo "tenv already installed, skipping"
 	else
-		echo "tenv was not found in PATH after install; run manually: tenv tofu install latest && tenv tf install latest"
+		if brew tap tofuutils/tap >/dev/null 2>&1; then
+			brew install tofuutils/tap/tenv || true
+			echo "Installing latest OpenTofu and Terraform via tenv"
+			if command -v tenv >/dev/null 2>&1; then
+				tenv tofu install latest
+				tenv tf install latest
+			elif [ -x "$(brew --prefix)/bin/tenv" ]; then
+				"$(brew --prefix)/bin/tenv" tofu install latest
+				"$(brew --prefix)/bin/tenv" tf install latest
+			else
+				echo "tenv was not found in PATH after install; run manually: tenv tofu install latest && tenv tf install latest"
+			fi
+		else
+			echo "Could not tap tofuutils/tap automatically; install tenv manually if needed."
+		fi
 	fi
-else
-	echo "Could not tap tofuutils/tap automatically; install tenv manually if needed."
+	echo "Updating Homebrew"
+	brew update || true
 fi
 
 echo "Install rustup/cargo if missing (needed by ~/.zshenv)"

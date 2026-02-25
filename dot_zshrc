@@ -1,6 +1,23 @@
-# If you come from bash you might have to change your $PATH.
-export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:/snap/bin/:$PATH
-export PATH="$HOME/.tfenv/bin:$PATH"
+# 1. Set the PATH clearly and only once
+export PATH="/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin"
+
+# 2. Add your custom tools to the FRONT
+export PATH="/home/tetio/.local/bin:/home/tetio/bin:/home/tetio/.tfenv/bin:/home/tetio/.cargo/bin:$PATH"
+
+# 3. Add Homebrew ONLY if it exists and use the Linux path
+if [[ -d "/home/linuxbrew/.linuxbrew" ]]; then
+    # Force the standard PATH to be exported so Brew can see 'readlink'
+    export PATH="/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
+    
+    # Check if brew actually works before trying to eval it
+	eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+	export PATH="/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:$PATH"
+fi
+
+# 4. Initialize zoxide (after PATH is set!)
+if command -v zoxide &> /dev/null; then
+    eval "$(zoxide init zsh)"
+fi
 
 # Remove duplicate entries from PATH while preserving order
 path_remove_dups() {
@@ -38,7 +55,8 @@ setopt HIST_SAVE_BY_COPY
 
 ### Plugin Manager (zinit) ###
 if [ ! -d "$ZINIT_HOME" ]; then
-	mkdir -p "$(dirname "$ZINIT_HOME")"
+	# create the parent directory without using dirname
+	mkdir -p "${ZINIT_HOME%/*}"
 	git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
 fi
 source "$ZINIT_HOME/zinit.zsh"
@@ -57,7 +75,7 @@ zinit light ajeetdsouza/zoxide
 ### My Customizations within the enviroment
 ## rc manager: helpers to load/reload/list your `rc` components
 typeset -A RC_LOADED
-_rc_files=(base.zsh alia.zsh completion.zsh zoxide.zsh)
+_rc_files=(alia.zsh completion.zsh zoxide.zsh)
 
 rc_file_path() {
 	if [[ -f "$1" ]]; then
