@@ -100,6 +100,7 @@ if command -v brew >/dev/null 2>&1; then
 	fi
 	echo "Updating Homebrew"
 	brew update || true
+	brew upgrade || true
 fi
 
 echo "Install rustup/cargo if missing (needed by ~/.zshenv)"
