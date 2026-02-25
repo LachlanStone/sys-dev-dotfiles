@@ -36,7 +36,8 @@ sudo dnf install -y \
     libguestfs-tools \
 	httpd-tools \
 	openssl \
-	openssh-clients
+	openssh-clients \
+	nvim
 
 sudo dnf group install -y development-tools
 
